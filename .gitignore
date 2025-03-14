@@ -54,7 +54,3 @@ Intermediate/*
 Plugins/*/Intermediate/*
 
 DerivedDataCache/*
-
-*.uasset
-*.umap
-Content/*
