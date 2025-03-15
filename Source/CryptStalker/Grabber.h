@@ -23,7 +23,29 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UFUNCTION(BlueprintCallable)
+	void Release();
+
+	UFUNCTION(BlueprintCallable)
+	void Grab();
+
+	UFUNCTION(BlueprintCallable)
+	UPhysicsHandleComponent* CreateHandle();
 private:
+
 	UPROPERTY(EditAnywhere)
 	float MaxDistance = 400;
+
+	UPROPERTY(EditAnywhere)
+	float GrabRadius = 200;
+
+	UPROPERTY(EditAnywhere)
+	float HoldDistance = 200;
+
+	bool PerformTrace(FHitResult& HitResult);
+    UPrimitiveComponent* GetGrabbableComponent(const FHitResult& HitResult);
+	void TryGrabComponent(UPhysicsHandleComponent* Handle, UPrimitiveComponent* HitComponent, const FHitResult& HitResult);
+
+
 };
