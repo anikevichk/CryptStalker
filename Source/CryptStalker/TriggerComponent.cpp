@@ -12,11 +12,9 @@ UTriggerComponent::UTriggerComponent()
 void UTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-    UE_LOG(LogTemp, Error, TEXT("i live"));
 }
 
 void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    UE_LOG(LogTemp, Warning, TEXT("i live"));
 }

@@ -4,7 +4,9 @@
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "Pedestal.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -108,3 +110,54 @@ void UGrabber::TryGrabComponent(UPhysicsHandleComponent* Handle, UPrimitiveCompo
 UPhysicsHandleComponent* UGrabber::CreateHandle(){
 	return GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 }
+
+
+void UGrabber::PlaceStatue()
+{
+    UPhysicsHandleComponent* Handle = CreateHandle();
+    if (!Handle) return;
+
+    AActor* HeldStatue = GetHeldObject();
+    if (!HeldStatue) return;
+
+    APedestal* NearestPedestal = FindNearbyPedestal();
+    if (!NearestPedestal) return;
+
+    if (NearestPedestal->PlaceStatue(HeldStatue))
+    {
+        Handle->ReleaseComponent(); 
+    }
+}
+
+AActor* UGrabber::GetHeldObject()
+{
+    UPhysicsHandleComponent* Handle = CreateHandle();
+    if (!Handle) return nullptr;
+
+    UPrimitiveComponent* GrabbedComponent = Handle->GetGrabbedComponent();
+    if (!GrabbedComponent) return nullptr;
+
+    return GrabbedComponent->GetOwner(); 
+}
+
+
+APedestal* UGrabber::FindNearbyPedestal()
+{
+    FVector PlayerLocation = GetOwner()->GetActorLocation(); 
+    float SearchRadius = 200.0f;
+
+    TArray<AActor*> FoundActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APedestal::StaticClass(), FoundActors);
+
+    for (AActor* Actor : FoundActors)
+    {
+        APedestal* Pedestal = Cast<APedestal>(Actor);
+        if (Pedestal && FVector::Dist(PlayerLocation, Pedestal->GetActorLocation()) < SearchRadius)
+        {
+            return Pedestal;
+        }
+    }
+
+    return nullptr;
+}
+

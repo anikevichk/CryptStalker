@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
+#include "Pedestal.h"
 #include "Grabber.generated.h"
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class CRYPTSTALKER_API UGrabber : public USceneComponent
@@ -31,6 +31,9 @@ public:
 	void Grab();
 
 	UFUNCTION(BlueprintCallable)
+	void PlaceStatue();
+
+	UFUNCTION(BlueprintCallable)
 	UPhysicsHandleComponent* CreateHandle();
 private:
 
@@ -46,6 +49,12 @@ private:
 	bool PerformTrace(FHitResult& HitResult);
     UPrimitiveComponent* GetGrabbableComponent(const FHitResult& HitResult);
 	void TryGrabComponent(UPhysicsHandleComponent* Handle, UPrimitiveComponent* HitComponent, const FHitResult& HitResult);
+
+	APedestal* FindNearbyPedestal();
+
+	UFUNCTION(BlueprintCallable)
+	AActor* GetHeldObject();
+
 
 
 };

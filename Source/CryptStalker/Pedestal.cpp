@@ -48,13 +48,23 @@ void APedestal::Tick(float DeltaTime)
 }
 
 bool APedestal::PlaceStatue(AActor* Statue){
-    if (IsOccupied()){
-        return false;
-    }
-    PlacedStatue = Statue;
-    Statue->SetActorLocation(GetActorLocation()); 
-    Statue->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform); 
+    if (IsOccupied()) return false; 
 
-    UE_LOG(LogTemp, Log, TEXT("Статуя установлена на колонну!"));
+    PlacedStatue = Statue;
+
+
+    FVector PedestalTop = GetActorLocation() + FVector(0, 0, 100); 
+
+    Statue->SetActorLocation(PedestalTop);
+
+    UPrimitiveComponent* StatueMesh = Cast<UPrimitiveComponent>(Statue->GetRootComponent());
+    if (StatueMesh) 
+    {
+        StatueMesh->SetSimulatePhysics(false);
+    }
+
+    Statue->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+
+    UE_LOG(LogTemp, Log, TEXT("Статуя установлена на пьедестал!"));
     return true;
 }
