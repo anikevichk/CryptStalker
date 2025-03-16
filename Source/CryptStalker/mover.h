@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Pedestal.h"
 #include "mover.generated.h"
 
 
@@ -36,5 +37,21 @@ private:
 	FVector OriginalLocation;
 
 	void MoveWall(float DeltaTime);
+
+	APedestal* FindPedestalWithTag(FName Tag);
+	TArray<AActor*> FindActorsWithTag(FName Tag);
+	void MoveDoor(AActor* Door, float DeltaTime, bool bMoveUp);
+
+	bool bDoorsAreDown = false; 
+
+	void InitializeOriginalLocation();
+
+	FVector TargetLocation;
+
+	UPROPERTY(EditAnywhere)
+	FVector MaxHeightOffset; 
+
+
+	
 
 };

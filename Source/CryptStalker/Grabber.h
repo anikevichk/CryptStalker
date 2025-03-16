@@ -34,6 +34,12 @@ public:
 	void PlaceStatue();
 
 	UFUNCTION(BlueprintCallable)
+	void TakeStatue();  
+
+	UFUNCTION(BlueprintCallable)
+	void HandlePlaceOrTake();
+	
+	UFUNCTION(BlueprintCallable)
 	UPhysicsHandleComponent* CreateHandle();
 private:
 

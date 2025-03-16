@@ -17,7 +17,8 @@ public:
 	// Sets default values for this actor's properties
 	APedestal();
 
-	bool IsOccupied() const {return PlacedStatue != nullptr; }
+	bool IsOccupied() const {
+		return PlacedStatue != nullptr; }
 
 	bool PlaceStatue(AActor* Statue);
 
@@ -29,8 +30,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere, Category = "Pedestal")
-    AActor* PlacedStatue = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pedestal")
+	AActor* PlacedStatue = nullptr;	
 
 	UPROPERTY(EditDefaultsOnly, Category = "Pedestal")
 	UStaticMeshComponent* PedestalMesh;
@@ -42,5 +43,9 @@ public:
 	UTriggerComponent* TriggerZone;
 
 	static int GetOccupiedPedestals(UWorld* World);
+
+	UFUNCTION(BlueprintCallable, Category = "Pedestal")
+	AActor* GetPlacedStatue() const { return PlacedStatue; }
+
 
 };

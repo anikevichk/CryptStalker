@@ -2,6 +2,7 @@
 
 
 #include "Pedestal.h"
+#include "Grabber.h"
 #include "TriggerComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
@@ -38,6 +39,24 @@ APedestal::APedestal()
 void APedestal::BeginPlay()
 {
 	Super::BeginPlay();
+
+    TArray<AActor*> OverlappingActors;
+    GetOverlappingActors(OverlappingActors);
+    for (AActor* Actor : OverlappingActors)
+    {
+        if (Actor->ActorHasTag("gold_man")) 
+        {
+            PlacedStatue = Actor;
+            PlacedStatue->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+            
+            UPrimitiveComponent* StatueMesh = Cast<UPrimitiveComponent>(PlacedStatue->GetRootComponent());
+            if (StatueMesh)
+            {
+                StatueMesh->SetSimulatePhysics(false);
+            }
+
+            break;
+        }}
 	
 }
 
@@ -52,21 +71,22 @@ bool APedestal::PlaceStatue(AActor* Statue)
 {
     if (!Statue)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Нет статуи для установки!"));
         return false;
     }
 
     if (IsOccupied())
     {
-        UE_LOG(LogTemp, Warning, TEXT("Пьедестал уже занят!"));
         return false;
     }
 
-    UE_LOG(LogTemp, Log, TEXT("Статуя найдена, установка..."));
 
     PlacedStatue = Statue;
 
-    FVector PedestalTop = GetActorLocation() + FVector(0, 0, 100);
+    FVector PedestalTop;
+    bool GoldMan = Statue->ActorHasTag("gold_man");
+    bool Replacemant = Statue->ActorHasTag("replacemant");
+
+    PedestalTop = GetActorLocation() + FVector(0, 0, 100);
 
     FRotator CorrectRotation = GetActorRotation(); 
     Statue->SetActorLocationAndRotation(PedestalTop, CorrectRotation);
@@ -79,7 +99,6 @@ bool APedestal::PlaceStatue(AActor* Statue)
         StatueMesh->SetSimulatePhysics(false);
     }
 
-    UE_LOG(LogTemp, Log, TEXT("Placed"));
     return true;
 }
 
@@ -99,8 +118,6 @@ int APedestal::GetOccupiedPedestals(UWorld* World)
         }
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("Занятых пьедесталов: %d"), OccupiedPedestals);
     return OccupiedPedestals;
 }
-
 

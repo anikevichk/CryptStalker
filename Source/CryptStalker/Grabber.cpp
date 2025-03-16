@@ -38,7 +38,6 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 }
 
 void UGrabber::Release(){
-	UE_LOG(LogTemp, Warning, TEXT("realese"));
 	UPhysicsHandleComponent* Handle = CreateHandle();
 	if (Handle->GetGrabbedComponent()!=nullptr){
 		Handle->ReleaseComponent();
@@ -67,8 +66,8 @@ bool UGrabber::PerformTrace(FHitResult& HitResult)
     FVector Start = GetComponentLocation();
     FVector End = Start + GetForwardVector() * MaxDistance;
 
-    DrawDebugLine(GetWorld(), Start, End, FColor::Red);
-    DrawDebugSphere(GetWorld(), End, 10, 10, FColor::Blue, false, 5);
+    // DrawDebugLine(GetWorld(), Start, End, FColor::Red);
+    // DrawDebugSphere(GetWorld(), End, 10, 10, FColor::Blue, false, 5);
 
     FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
 
@@ -87,7 +86,6 @@ UPrimitiveComponent* UGrabber::GetGrabbableComponent(const FHitResult& HitResult
     UPrimitiveComponent* HitComponent = HitResult.GetComponent();
     if (!HitComponent)
     {
-        UE_LOG(LogTemp, Warning, TEXT("No valid component hit."));
         return nullptr;
     }
 
@@ -161,3 +159,39 @@ APedestal* UGrabber::FindNearbyPedestal()
     return nullptr;
 }
 
+void UGrabber::TakeStatue()
+{
+    APedestal* NearestPedestal = FindNearbyPedestal();
+    if (!NearestPedestal || !NearestPedestal->PlacedStatue)
+    {
+        return;
+    }
+
+    AActor* Statue = NearestPedestal->PlacedStatue;
+    NearestPedestal->PlacedStatue = nullptr;
+
+    Statue->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+    UPrimitiveComponent* StatueMesh = Cast<UPrimitiveComponent>(Statue->GetRootComponent());
+    if (StatueMesh)
+    {
+        StatueMesh->SetSimulatePhysics(true);
+    }
+
+    Grab();
+}
+
+void UGrabber::HandlePlaceOrTake()
+{
+    APedestal* NearestPedestal = FindNearbyPedestal();
+    if (!NearestPedestal) return;
+
+    if (NearestPedestal->IsOccupied()) 
+    {
+        TakeStatue();
+    } 
+    else 
+    {
+        PlaceStatue();
+    }
+}
