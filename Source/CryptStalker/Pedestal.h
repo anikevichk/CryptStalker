@@ -41,5 +41,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pedestal")
 	UTriggerComponent* TriggerZone;
 
+	static int GetOccupiedPedestals(UWorld* World);
 
 };

@@ -3,6 +3,7 @@
 
 #include "Pedestal.h"
 #include "TriggerComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values
@@ -47,24 +48,59 @@ void APedestal::Tick(float DeltaTime)
 
 }
 
-bool APedestal::PlaceStatue(AActor* Statue){
-    if (IsOccupied()) return false; 
+bool APedestal::PlaceStatue(AActor* Statue)
+{
+    if (!Statue)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Нет статуи для установки!"));
+        return false;
+    }
+
+    if (IsOccupied())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Пьедестал уже занят!"));
+        return false;
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("Статуя найдена, установка..."));
 
     PlacedStatue = Statue;
 
+    FVector PedestalTop = GetActorLocation() + FVector(0, 0, 100);
 
-    FVector PedestalTop = GetActorLocation() + FVector(0, 0, 100); 
+    FRotator CorrectRotation = GetActorRotation(); 
+    Statue->SetActorLocationAndRotation(PedestalTop, CorrectRotation);
 
-    Statue->SetActorLocation(PedestalTop);
+    Statue->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 
     UPrimitiveComponent* StatueMesh = Cast<UPrimitiveComponent>(Statue->GetRootComponent());
-    if (StatueMesh) 
+    if (StatueMesh)
     {
         StatueMesh->SetSimulatePhysics(false);
     }
 
-    Statue->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-
-    UE_LOG(LogTemp, Log, TEXT("Статуя установлена на пьедестал!"));
+    UE_LOG(LogTemp, Log, TEXT("Placed"));
     return true;
 }
+
+int APedestal::GetOccupiedPedestals(UWorld* World)
+{
+    int OccupiedPedestals = 0;
+    TArray<AActor*> Pedestals;
+
+    UGameplayStatics::GetAllActorsOfClass(World, APedestal::StaticClass(), Pedestals);
+
+    for (AActor* Actor : Pedestals)
+    {
+        APedestal* Pedestal = Cast<APedestal>(Actor);
+        if (Pedestal && Pedestal->IsOccupied()) 
+        {
+            OccupiedPedestals++;
+        }
+    }
+
+    UE_LOG(LogTemp, Warning, TEXT("Занятых пьедесталов: %d"), OccupiedPedestals);
+    return OccupiedPedestals;
+}
+
+

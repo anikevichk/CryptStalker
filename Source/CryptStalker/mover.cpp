@@ -3,6 +3,8 @@
 
 #include "mover.h"
 #include "Math/UnrealMathUtility.h"
+#include "Kismet/GameplayStatics.h"
+#include "Pedestal.h"
 
 // Sets default values for this component's properties
 Umover::Umover()
@@ -30,19 +32,26 @@ void Umover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (ShouldMove){
-		MoveWall(DeltaTime);
-	}
-	
+    int OccupiedPedestals = APedestal::GetOccupiedPedestals(GetWorld());
 
+    TArray<AActor*> Pedestals;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APedestal::StaticClass(), Pedestals);
+    int TotalPedestals = Pedestals.Num();
+
+    UE_LOG(LogTemp, Warning, TEXT("Total: %d, Occupied: %d"), TotalPedestals-2, OccupiedPedestals);
+
+    if (OccupiedPedestals == TotalPedestals-2 && TotalPedestals > 0)
+    {
+        MoveWall(DeltaTime);
+    }
 }
 
-void Umover::MoveWall(float DeltaTime){
+void Umover::MoveWall(float DeltaTime)
+{
+    FVector CurrentLocation = GetOwner()->GetActorLocation();
+    FVector TargetLocation = OriginalLocation + MoveOffset;
+    float Speed = FVector::Distance(OriginalLocation, TargetLocation) / MoveTime;
 
-	FVector CurrentLocation = GetOwner()->GetActorLocation();
-	FVector TargetLocation = OriginalLocation + MoveOffset;
-	float Speed = FVector::Distance(OriginalLocation, TargetLocation)/ MoveTime;
-
-	FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, Speed);
-	GetOwner()->SetActorLocation(NewLocation);
+    FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, Speed);
+    GetOwner()->SetActorLocation(NewLocation);
 }
