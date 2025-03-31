@@ -1,4 +1,4 @@
-# Crypt Raider – 3D Puzzle-Adventure Game
+# CryptStalker – 3D Puzzle-Adventure Game
 
 **Crypt Raider** is a first-person puzzle-adventure game built with C++ in Unreal Engine 5. The player explores ancient ruins, manipulates statues, activates pedestals, and opens passages using physics-based interaction and trap logic.
 
