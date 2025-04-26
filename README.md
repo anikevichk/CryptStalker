@@ -1,35 +1,41 @@
 # CryptStalker – 3D Puzzle-Adventure Game
+[Gameplay Video](https://www.youtube.com/watch?v=RNd0nUqskxs)
 
 **Crypt Raider** is a first-person puzzle-adventure game built with C++ in Unreal Engine 5. The player explores ancient ruins, manipulates statues, activates pedestals, and opens passages using physics-based interaction and trap logic.
 
 ## Core Gameplay
 
-- **Grabber System**: Pick up, move, and release objects using a `UPhysicsHandleComponent`.
-- **Pedestals**: Automatically detects nearby pedestals and places or removes statues.
-- **Movable Walls & Doors**: React to the number of occupied pedestals or specific tags (e.g. `"pedestal_gold"`).
-- **Trap Mechanics**: Triggered by special pedestals that control hidden trap doors or walls.
-- **C++ Logic**: Includes component-based architecture, physics handling, tag-based interactions, and tracing.
+- Physics-based object grabbing, movement, and placement using UPhysicsHandleComponent.
+- Solving puzzles by placing statues on pedestals to unlock doors and pathways.
+- Activating traps that create hidden hazards or open new areas.
+- Dynamic environment interaction: movable walls, trap doors, and reactive platforms.
+- First-person exploration and puzzle-solving inside ancient crypt environments.
+
+## Implemented Features
+
+
+###  C++-Driven Interaction System
+- All core mechanics (grabbing, pedestal logic, movable structures, traps) are fully implemented in C++ without relying on Blueprints.
+
+###  Physics-Based Grabbing System
+- Realistic object pickup, movement, and placement using `UPhysicsHandleComponent`.
+
+### Dynamic Pedestal Logic
+- Pedestals automatically detect statues nearby and trigger events such as opening doors or activating traps.
+
+### Movable Structures and Trap Activation
+- Walls, doors, and trap mechanisms dynamically react based on pedestal states or trap triggers.
+
 
 ## Code Structure
 
-- `Grabber.cpp/.h` – Handles grabbing, releasing, placing, and retrieving statues.
-- `Pedestal.cpp/.h` – Pedestal behavior, statue attachment, and occupancy check.
-- `Mover.cpp/.h` – Moves walls or doors based on pedestal states or trap triggers.
-- `TriggerComponent.cpp/.h` – Custom trigger volume for interactions.
-- `Blueprints`, `Materials` – Assets from **Medieval Dungeon Pack**.
-
-## Technologies Used
-
-- Unreal Engine 5 (C++)
-- Component system: `ActorComponent`, `StaticMeshComponent`, `PhysicsHandleComponent`
-- Gameplay mechanics with `Tags`, `AttachToActor`, `SweepSingleByChannel`, `VInterpConstantTo`
-- Debug tools using `DrawDebugHelpers`
-- Optimized with `Tick`, `FindComponentByClass`, `GetAllActorsOfClass`
+| `Grabber.cpp/.h` | Grabbing, releasing, and placing statues |
+| `Pedestal.cpp/.h` | Pedestal behavior and statue detection |
+| `Mover.cpp/.h` | Moving walls and doors based on triggers |
+| `TriggerComponent.cpp/.h` | Custom trigger volumes for interaction |
 
 ## Controls
 
 - `WASD` — Move  
 - `LMB` — Grab / Release object  
 - `E` — Interact with pedestal (place or take statue)  
-- `F` — Trigger trap (if implemented)
-
