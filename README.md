@@ -28,7 +28,8 @@
 
 
 ## Code Structure
-
+| File | Purpose |
+|:---|:---|
 | `Grabber.cpp/.h` | Grabbing, releasing, and placing statues |
 | `Pedestal.cpp/.h` | Pedestal behavior and statue detection |
 | `Mover.cpp/.h` | Moving walls and doors based on triggers |
